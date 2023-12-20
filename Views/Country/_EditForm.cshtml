@@ -1,0 +1,43 @@
+﻿@using TenantSubscriptionApp.Core.ViewModels;
+@model CountryViewModel
+
+<div class="container mt-3">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Edit Country</h2>
+
+            <form asp-action="UpdateCountry" method="post">
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-3">
+                    <label asp-for="EnglishName" class="form-label">English Name:</label>
+                    <input asp-for="EnglishName" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ArabicName" class="form-label">Arabic Name:</label>
+                    <input asp-for="ArabicName" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Code" class="form-label">Code:</label>
+                    <input asp-for="Code" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ZipCode" class="form-label">Zip Code:</label>
+                    <input asp-for="ZipCode" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Iso3" class="form-label">English Iso3:</label>
+                    <input asp-for="Iso3" class="form-control" />
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>

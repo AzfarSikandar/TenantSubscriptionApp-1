@@ -1,0 +1,35 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "ERP System";
+}
+
+<div class="container mt-5">
+    <h2>Welcome to the Dashboard</h2>
+    <p>This is the main page of your application. Choose an option from below:</p>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Countries</h5>
+                    <p class="card-text">Explore and manage countries.</p>
+                    <a href="@Url.Action("Index", "Country")" class="btn btn-primary">Go to Countries</a>
+                </div>
+            </div>
+        </div>
+
+        @* <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Currencies</h5>
+                    <p class="card-text">Explore and manage currencies.</p>
+                    <a href="@Url.Action("Index", "Currencies")" class="btn btn-primary">Go to Currencies</a>
+                </div>
+            </div>
+        </div> *@
+    </div>
+</div>
+
+

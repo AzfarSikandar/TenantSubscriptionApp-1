@@ -1,0 +1,110 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using TenantSubscriptionApp.Areas.Identity.Data
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TenantSubscription</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/AuthSystem.styles.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container-fluid p-0">
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+
+                    <a class="navbar-brand" asp-area="" asp-controller="" asp-action="">SGS - TenantsRegistration</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </nav>
+            }
+            @if (User.Identity.IsAuthenticated)
+            {
+                var userName = UserManager.GetUserName(User);
+                var endingIndex = userName.IndexOf("@");
+                var firstName = userName.Substring(0, endingIndex);
+                var firstNameCapitalized = char.ToUpper(firstName[0]) + firstName.Substring(1);
+                <nav class="navbar navbar-expand navbar-toggleable-sm navbar-light bg-white pb-0 px-4">
+
+                    <a class="navbar-brand" asp-area="" asp-controller="" asp-action=""> Tenant - @firstNameCapitalized </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                        <partial name="_LoginPartial.cshtml" />
+                    </div>
+                </nav>
+                <hr class="mx-4 my-0" />
+                <nav class="navbar navbar-expand navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 px-4">
+
+                    <div class="navbar-collapse collapse d-sm-inline-flex ">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" href="@Url.Action("Index", "Dashboard")">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "SubscriptionIndex" ? "active" : "")" href="@Url.Action("SubscriptionIndex", "Subscription")">Subscriptions</a>
+                            </li>
+                            @if (User.IsInRole("Administrator") || User.IsInRole("Manager"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "UserIndex" ? "active" : "")" href="@Url.Action("UserIndex", "User")">Users</a>
+                                </li>
+                            }
+                            @if (User.IsInRole("Administrator"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "OrganisationIndex" ? "active" : "")" href="@Url.Action("OrganisationIndex", "Organisation")">Organisations</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </nav>
+
+            }
+
+        </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+ @*    <footer class="border-top footer text-muted mb-0">
+        <div class="container">
+            &copy; 2023 - TenantSubscription - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer> *@
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    @*  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+    integrity="sha384-9aVNfI7IaI3d5mbpPTr9XS1Vz3c+CjkWCvxdK9Q8eA4QF2i/F9E+o12F7RSjo3a"
+    crossorigin="anonymous"></script> *@
+    @* <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+    integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wy3u6SsGtZ3fE5hFUVg8zW1oI9SvZjNl4"
+    crossorigin="anonymous"></script> *@
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"
+            integrity="sha384-Ynm49wuT7azQj1fV0Wn6pZn5+7AfY26dFk8bqqlktxlXgFkSrzJj4tgA6Fm/VfC7"
+            crossorigin="anonymous"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

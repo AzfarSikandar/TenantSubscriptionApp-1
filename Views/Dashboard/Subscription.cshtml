@@ -1,0 +1,132 @@
+﻿@using TenantSubscriptionApp.Areas.Identity.Data;
+@using Microsoft.AspNetCore.Identity
+@using TenantSubscriptionApp.Models;
+
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@model List<TenantSubscription>
+@{
+    ViewData["Title"] = "Subscriptions";
+}
+
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="container mt-5">
+        @if (!User.IsInRole("Manager"))
+        {
+            <div class="container d-flex justify-content-between align-items-center">
+                <h2>Subscriptions</h2>
+            </div>
+        }
+        @if (User.IsInRole("Manager"))
+        {
+            <div class="container d-flex justify-content-between align-items-center">
+                <h2>Subscriptions</h2>
+                <a asp-action="AddSubscription" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addSubscriptionModal">Add New</a>
+            </div>
+        }
+        
+        <hr />
+
+        <!-- Display the list of subscriptions in a tabular form -->
+        @if (Model.Any())
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">S.No</th>
+                        <th scope="col">Application Name</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var i = 0; i < Model.Count; i++)
+                    {
+                        <tr>
+                            <th scope="row">@(i + 1)</th>
+                            <td>@Model[i].Application.Name</td>
+
+                            @if (@Model[i].IsActive)
+                            {
+                                <td>Active</td>
+                                <td>
+                                    @* var appName = @Model[i].Replace(" ", "") *@
+                                    <button class="btn btn-success" onclick="launchApplication('@Model[i].Application.Name', @Model[i].Id)">Launch</button>
+                                </td>
+                            }
+                            @if (!@Model[i].IsActive)
+                            {
+                                <td>Deployment In-Progress</td>
+                                <td>
+                                    @* var appName = @Model[i].Replace(" ", "") *@
+                                    <button class="btn btn-success" onclick="launchApplication('@Model[i].Application.Name', @Model[i].Id)" disabled style="pointer-events: revert;">Launch</button>
+                                </td>
+                            }
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No subscriptions yet.</p>
+        }
+    </div>
+
+    <!-- Add new subscription modal -->
+    <div class="modal fade" id="addSubscriptionModal" tabindex="-1" role="dialog" aria-labelledby="addSubscriptionModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addSubscriptionModalLabel">Add New Subscription</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Add a form for adding new subscriptions (replace this with your actual form) -->
+                    <form>
+                        <div class="form-group">
+                            <label for="appName">Application Name:</label>
+                            <input type="text" class="form-control" id="appName" placeholder="Enter Application Name">
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="appCheckbox1">
+                            <label class="form-check-label" for="appCheckbox1">Application 1</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="appCheckbox2">
+                            <label class="form-check-label" for="appCheckbox2">Application 2</label>
+                        </div>
+                        <!-- Add more checkboxes for available applications -->
+                        <!-- Add any additional form fields as needed -->
+
+                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@* JavaScript function to launch the application in a new tab *@
+<script>
+    function launchApplication(applicationName, subscriptionId) {
+        // Assuming you have the URL or logic to launch the application
+        // For demonstration, opening a new tab with the application name
+        let baseUrl = "";
+        let appName = applicationName.replace(/\s/g, "");
+        if (appName === "ERPSystem") {
+            baseUrl = '@Url.Action("Index", "ERPSystem", null, Context.Request.Scheme)';
+        }
+        else if (appName === "HR Management System") {
+            baseUrl = '@Url.Action("Index", "ERPSystem", null, Context.Request.Scheme)';
+        }
+        window.open('https://erpsystem.azurewebsites.net?subscriptionId=${subscriptionId}', '_blank');
+    }
+</script>

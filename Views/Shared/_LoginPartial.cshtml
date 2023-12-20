@@ -1,0 +1,48 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using TenantSubscriptionApp.Areas.Identity.Data
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<ul class="navbar-nav ms-auto">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        var userName = UserManager.GetUserName(User);
+        var endingIndex = userName.IndexOf("@");
+        var firstName = userName.Substring(0, endingIndex);
+        var firstNameCapitalized = char.ToUpper(firstName[0]) + firstName.Substring(1);
+
+        <li class="nav-item dropdown">
+            <a id="profileDropdown" class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img src="~/img/profile.png" alt="Profile Image" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
+                @firstNameCapitalized
+            </a>
+            <div class="dropdown-menu" aria-labelledby="profileDropdown">
+                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" )">Edit Profile</a>
+                <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Dashboard", new { area = "" })">
+                    <button id="logout" type="submit" class="dropdown-item">Logout</button>
+                </form>
+            </div>
+        </li>
+    }
+</ul>
+@* <ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+            var userName = UserManager.GetUserName(User);
+            var endingIndex = userName.IndexOf("@");
+
+            var firstName = userName.Substring(0, endingIndex);
+
+            var firstNameCapitalized = char.ToUpper(firstName[0]) + firstName.Substring(1);
+
+        <li class="nav-item">
+            <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">@firstNameCapitalized</a>
+        </li>
+        <li class="nav-item">
+            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Dashboard", new { area = "" })">
+                <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
+            </form>
+        </li>
+    }
+</ul> *@

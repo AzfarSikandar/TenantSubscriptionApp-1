@@ -1,0 +1,76 @@
+﻿<div id="subscriptionLoader" class="loader-container">
+    <div class="loader"></div>
+    <p id="loaderMessage">Please wait...</p>
+</div>
+
+@model List<Application>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Add Subscription";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body align-content-md-center align-content-between">
+                    <h2 class="card-title text-center mb-3">Add New Subscription</h2>
+
+                    <form asp-action="Add" method="post" id="subscriptionForm">
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-group mb-3">
+                            <label class="mb-3" for="selectedApp">Applications: </label>
+                            <select class="form-control mb-3" id="selectedApp" name="appName">
+                                <option value="" disabled selected>Select Application</option>
+                                @foreach (var app in Model)
+                                {
+                                    var isSubscribed = ViewBag.SubscribedApps.Contains(app.Name);
+                                    var isDisable = isSubscribed ? "disabled" : "";
+
+                                    @if (isSubscribed)
+                                    {
+                                        <option value="@app.Id" disabled>@app.Name (Already Subscribed)</option>
+
+                                    }
+                                    @if (!isSubscribed)
+                                    {
+                                        <option value="@app.Id">@app.Name</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="button" class="btn btn-primary mt-3" onclick="submitForm()">Subscribe</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function submitForm() {
+        // Show loader
+        var loader = document.getElementById('subscriptionLoader');
+        var loaderMessage = document.getElementById('loaderMessage');
+
+        loader.style.display = 'flex'; // Show loader container
+        loaderMessage.innerText = 'Please wait...'; // Initial message
+
+
+
+
+        setTimeout(function () {
+            var form = document.getElementById('subscriptionForm');
+            if (form) {
+                form.submit(); 
+            }
+            loaderMessage.innerText = 'Creating Database...'; // Update loader message
+        }, 2000);
+    }
+</script>

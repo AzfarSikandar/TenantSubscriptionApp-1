@@ -1,0 +1,67 @@
+﻿@using TenantSubscriptionApp.Core.ViewModels;
+@model List<CountryViewModel>
+
+<h2>Countries</h2>
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>S.No</th>
+                <th>English Name</th>
+                <th>Arabic Name</th>
+                <th>Code</th>
+                <th>Zip Code</th>
+                <th>Iso3</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (var i = 0; i < Model.Count; i++)
+            {
+                <tr>
+                    <td>@(i + 1)</td>
+                    <td>@Model[i].EnglishName</td>
+                    <td>@Model[i].ArabicName</td>
+                    <td>@Model[i].Code</td>
+                    <td>@Model[i].ZipCode</td>
+                    <td>@Model[i].Iso3</td>
+                    <td>
+                        @* <a href="#" class="edit-link" data-id="@Model[i].Id">Edit</a> *@
+                        <a href="#" class="edit-link" data-id="@Model[i].Id" onclick="openEditForm(@Model[i].Id)">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@Model[i].Id">Delete</a>
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+
+    </table>
+</div>
+
+<a asp-controller="Country" asp-action="Add" class="btn btn-primary ">Add New Country</a>
+
+
+
+<div id="editFormContainer" style="display:none;"></div>
+
+
+
+<script>
+    function openEditForm(countryId) {
+        // Fetch data for the specific country using AJAX
+        $.ajax({
+            url: '@Url.Action("GetCountryById", "Country")', // Update the action and controller as needed
+            type: 'GET',
+            data: { id: countryId },
+            success: function (data) {
+                // Load the edit form
+                $('#editFormContainer').html(data);
+                $('#editFormContainer').show();
+            },
+            error: function () {
+                alert('Error fetching data for editing.');
+            }
+        });
+    }
+</script>

@@ -1,0 +1,29 @@
+﻿@using TenantSubscriptionApp.Core.ViewModels;
+@model CountryInputModel
+
+<h2>Add New Country</h2>
+
+<form asp-action="Add" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <label asp-for="EnglishName">English Name:</label>
+        <input asp-for="EnglishName" class="form-control mb-3" />
+
+        <label asp-for="ArabicName">Arabic Name:</label>
+        <input asp-for="ArabicName" class="form-control mb-3" />
+
+        <label asp-for="Code">Code:</label>
+        <input asp-for="Code" class="form-control mb-3" />
+
+        <label asp-for="ZipCode">Zip Code:</label>
+        <input asp-for="ZipCode" class="form-control mb-3" />
+
+        <label asp-for="Iso3">English Iso3:</label>
+        <input asp-for="Iso3" class="form-control mb-3" />
+
+    </div>
+    <!-- Add other form fields -->
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

@@ -1,0 +1,111 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+#sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    height: 100vh;
+    background-color: #343a40; /* Bootstrap dark theme background color */
+    padding-top: 56px; /* Bootstrap fixed-top navbar height */
+}
+
+#sidebar a {
+    padding: 10px 15px;
+    text-decoration: none;
+    font-size: 16px;
+    color: #fff; /* White text */
+    display: block;
+}
+
+#sidebar a:hover {
+    background-color: #5a6268; /* Bootstrap dark theme hover color */
+}
+
+#sidebar .active {
+    background-color: #007bff; /* Bootstrap primary color for active tab */
+}
+.loader-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loader {
+    border: 8px solid #f3f3f3; /* Light gray border */
+    border-top: 8px solid #3498db; /* Blue border */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite; /* Spin animation */
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+#loaderMessage {
+    margin-top: 10px;
+}
+.navbar-nav a.nav-link {
+    color: #333;  /*set the color of the tabs*/ 
+}
+
+.navbar-nav a.nav-link:hover {
+    color: #555;  /*set the color when hovering over the tabs */
+}
+
+.navbar-nav .active {
+    background-color: #007bff;  /*set the background color of the selected tab */
+}
+
+.navbar-nav .active a.nav-link {
+    color: #fff;  
+}
+
+.navbar {
+    background-color: #3498db; /* Change the background color to a blue shade */
+    color: #ecf0f1; /* Change the text color to a light color */
+}
+
+.navbar-nav .nav-link {
+    color: #2c3e50; /* Change the text color of the links to a darker color */
+}
+
+    .navbar-nav .nav-link.active {
+        background-color: #ecf0f1; /* Change the background color of the active tab to a darker color */
+        color: #ecf0f1; /* Change the text color of the active tab to a light color */
+    }
+

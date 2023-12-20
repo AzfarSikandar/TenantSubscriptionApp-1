@@ -1,0 +1,48 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Organisations";
+}
+@model List<Organisation>
+
+<div class="text-center">
+    <div class="container d-flex justify-content-between align-items-center">
+        <h2>Organisations</h2>
+        @if (User.IsInRole("Administrator"))
+        {
+
+            <a asp-controller="Organisation" asp-action="Add" class="btn btn-primary btn-sm">Add New</a>
+
+        }
+    </div>
+    <hr/>
+    @if (@Model != null && @Model.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @for (var i = 0; i < Model.Count(); i++)
+                {
+                    <tr>
+                        <td>@Model[i].Id</td>
+                        <td>@Model[i].Name</td>
+                        <td>
+                            <a asp-controller="Organisation" asp-action="Edit" asp-route-id="@Model[i].Id">Edit</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+<div class="text-center">
+</div>
