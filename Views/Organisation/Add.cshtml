@@ -1,15 +1,15 @@
 ﻿@model Organisation;
 
-<form asp-controller="Organisation" asp-action ="AddOrganisation" method="post">
+<form asp-controller="Organisation" asp-action="AddOrganisation" method="post">
     <div class="form-group">
         <label asp-for="Name">Name</label>
         <input asp-for="Name" class="form-control mb-3" />
     </div>
-  @*   <div class="form-check">
+    <div class="form-check">
         <input class="form-check-input" type="checkbox" value="true" id="defaultCheck2" disabled>
-       @*  <label class="form-check-label" for="defaultCheck2">
+        <label class="form-check-label" for="defaultCheck2">
             CreateUser
         </label>
-    </div> *@
+    </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>

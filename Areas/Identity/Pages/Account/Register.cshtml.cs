@@ -144,7 +144,6 @@ namespace TenantSubscriptionApp.Areas.Identity.Pages.Account
             returnUrl ??= @Url.Action("UserIndex", "User");
             //returnUrl ??= Url.Content("~/");
 
-
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
@@ -163,9 +162,8 @@ namespace TenantSubscriptionApp.Areas.Identity.Pages.Account
                 var users = _unitOfWork.User.GetUsers();
 
                 //Custom Code for setting the first user for an organization to be a manager by default
-                var countOrg = users.Where(us => us.Organisation.Id == user.Organisation.Id).Count();
+                var countOrg = users.Where(us => us.Organisation.Id == user.OrganisationId).Count();
                 var result = await _userManager.CreateAsync(user, Input.Password);
-
 
                 if (result.Succeeded)
                 {

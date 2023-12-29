@@ -11,30 +11,27 @@
         <h2>Organisations</h2>
         @if (User.IsInRole("Administrator"))
         {
-
             <a asp-controller="Organisation" asp-action="Add" class="btn btn-primary btn-sm">Add New</a>
-
         }
     </div>
-    <hr/>
+    <hr />
     @if (@Model != null && @Model.Any())
     {
-        <table class="table">
+        <table class="table text-start">
             <thead>
                 <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Edit</th>
+                    <th scope="col" class="text-left">Id</th>
+                    <th scope="col" class="text-left">Name</th>
+                    <th scope="col" class="text-left">Edit</th>
                 </tr>
             </thead>
             <tbody>
-
                 @for (var i = 0; i < Model.Count(); i++)
                 {
                     <tr>
-                        <td>@Model[i].Id</td>
-                        <td>@Model[i].Name</td>
-                        <td>
+                        <td class="text-left">@Model[i].Id</td>
+                        <td class="text-left">@Model[i].Name</td>
+                        <td class="text-left">
                             <a asp-controller="Organisation" asp-action="Edit" asp-route-id="@Model[i].Id">Edit</a>
                         </td>
                     </tr>

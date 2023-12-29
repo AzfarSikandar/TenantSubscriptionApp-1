@@ -9,5 +9,7 @@ namespace TenantSubscriptionApp.Core.Repositories
         ICollection<Organisation> GetOrganisations();
 
         Task<bool> InsertOrganisation(Organisation input);
+
+        //Task<bool> Update(int id);
     }
 }

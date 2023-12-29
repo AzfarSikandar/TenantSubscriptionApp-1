@@ -1,6 +1,5 @@
 ﻿using TenantSubscriptionApp.Areas.Identity.Data;
 using TenantSubscriptionApp.Core.Repositories;
-using TenantSubscriptionApp.Core.ViewModels;
 using TenantSubscriptionApp.Data;
 using TenantSubscriptionApp.Models;
 using Microsoft.AspNetCore.Identity;
@@ -13,12 +12,12 @@ namespace TenantSubscriptionApp.Repositories
     {
         private readonly AuthDBContext _dbContext;
 
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public OrganisationRepository(AuthDBContext authDBContext, UserManager<ApplicationUser> userManager)
+
+        public OrganisationRepository(AuthDBContext authDBContext)
         {
             _dbContext = authDBContext;
-            _userManager = userManager;
+
         }
 
         public ICollection<Organisation> GetOrganisations()
@@ -42,6 +41,8 @@ namespace TenantSubscriptionApp.Repositories
 
                     await _dbContext.SaveChangesAsync();
 
+
+
                     isCreated = true;
 
                 }
@@ -58,6 +59,22 @@ namespace TenantSubscriptionApp.Repositories
 
             return isCreated;
         }
+
+      //public async Task<bool> Update(int id)
+      //  {
+      //      var result = false;
+
+      //      try
+      //      {
+
+      //      }
+      //      catch (Exception)
+      //      {
+
+      //          throw;
+      //      }
+      //      return result;
+      //  }
 
     }
 }

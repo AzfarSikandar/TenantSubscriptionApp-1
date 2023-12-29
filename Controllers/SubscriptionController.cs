@@ -12,7 +12,7 @@ namespace TenantSubscriptionApp.Controllers
     public class SubscriptionController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-       
+
         public SubscriptionController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -26,14 +26,13 @@ namespace TenantSubscriptionApp.Controllers
             var user = _unitOfWork.User.GetUser(userId);
 
             var subscriptions = _unitOfWork.Subscription.GetSubscriptions(user.OrganisationId);
-            
+
             foreach (var subscription in subscriptions)
             {
-                if (!subscription.IsActive)
-                {
-                    bool isCreated = await _unitOfWork.Subscription.CheckDbCreated(subscription);
-                    subscription.IsActive = isCreated;
-                }
+
+                bool isCreated = await _unitOfWork.Subscription.CheckDbCreated(subscription);
+                subscription.IsActive = isCreated;
+
             }
 
             return View(subscriptions);
@@ -48,9 +47,10 @@ namespace TenantSubscriptionApp.Controllers
 
             var subscribedApps = _unitOfWork.Subscription.GetSubscriptions(user.OrganisationId);
 
-            ViewBag.SubscribedApps = subscribedApps;
 
-            var availableApplications =  _unitOfWork.Application.GetApplications().ToList();
+            ViewBag.SubscribedApps = subscribedApps.Count > 0 ? subscribedApps.AsEnumerable().Select(ts => ts.Application).ToList() : new List<Application>();
+
+            var availableApplications = _unitOfWork.Application.GetApplications().ToList();
 
             return View(availableApplications);
         }
@@ -59,13 +59,14 @@ namespace TenantSubscriptionApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(int applicationId)
         {
+
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             var user = _unitOfWork.User.GetUser(userId);
 
-            var isCreated =await _unitOfWork.Subscription.AddSubscription(applicationId, user);
+            var isCreated = await _unitOfWork.Subscription.AddSubscription(applicationId, user);
 
-            return RedirectToAction("Subscription");
+            return RedirectToAction("SubscriptionIndex");
         }
     }
 }

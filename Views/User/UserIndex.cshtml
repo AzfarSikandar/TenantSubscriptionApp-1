@@ -29,7 +29,11 @@
                     <th scope="col">Last</th>
                     <th scope="col">Email</th>
                     <th scope="col">Organisation</th>
-                    <th scope="col">Edit</th>
+                    @if (User.IsInRole("Manager") || User.IsInRole("Administrator"))
+                    {
+
+                        <th scope="col">Edit</th>
+                    }
                 </tr>
             </thead>
             <tbody>
@@ -42,10 +46,17 @@
                         <td>@Model[i].LastName</td>
                         <td>@Model[i].Email</td>
                         <td>@Model[i].Organisation.Name</td>
+                        @if (User.IsInRole("Manager") || User.IsInRole("Administrator"))
+                        {
+                            <td>
 
-                        <td>
-                            <a asp-controller="User" asp-action="Edit" asp-route-id="@Model[i].Id">Edit</a>
-                        </td>
+
+                                <a asp-controller="User" asp-action="Edit" asp-route-id="@Model[i].Id" disabled>Edit</a>
+
+
+                            </td>
+                        }
+
                     </tr>
                 }
             </tbody>

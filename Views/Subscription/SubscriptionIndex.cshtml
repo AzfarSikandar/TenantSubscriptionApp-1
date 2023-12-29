@@ -1,5 +1,4 @@
-﻿
-@model List<TenantSubscription>
+﻿@model List<TenantSubscription>
 @{
     ViewData["Title"] = "Subscriptions";
 }
@@ -46,7 +45,7 @@
                                 <td>Active</td>
                                 <td>
                                     @* var appName = @Model[i].Replace(" ", "") *@
-                                    <button class="btn btn-success" onclick="launchApplication('@Model[i].Application.Name', @Model[i].Id)">Launch</button>
+                                    <button class="btn btn-success" onclick="launchApplication('@Model[i].Application.Id', @Model[i].Id)">Launch</button>
                                 </td>
                             }
                             @if (!@Model[i].IsActive)
@@ -54,7 +53,7 @@
                                 <td>Deployment In-Progress</td>
                                 <td>
                                     @* var appName = @Model[i].Replace(" ", "") *@
-                                    <button class="btn btn-success" onclick="launchApplication('@Model[i].Application.Name', @Model[i].Id)" disabled style="pointer-events: revert;">Launch</button>
+                                    <button class="btn btn-success" onclick="launchApplication('@Model[i].Application.Id', @Model[i].Id)" disabled style="pointer-events: revert;">Launch</button>
                                 </td>
                             }
 
@@ -71,18 +70,27 @@
 }
 @* JavaScript function to launch the application in a new tab *@
 <script>
-    function launchApplication(applicationName, subscriptionId) 
-    {
-        // Assuming you have the URL or logic to launch the application
+    const Applications = {
+        ERP: 1,
+        HRMS: 2
+    }
+    function launchApplication(applicationId, subscriptionId) {
+        
         // For demonstration, opening a new tab with the application name
-        let baseUrl = "";
-        let appName = applicationName.replace(/\s/g, "");
-        if (appName === "ERPSystem") {
-            baseUrl = '@Url.Action("Index", "ERPSystem", null, Context.Request.Scheme)';
+        // let baseUrl = "";
+        // let appName = applicationName.replace(/\s/g, "");
+        console.log('Value of constant ERP: ' + Number(Applications.ERP))
+        console.log('Value of constant HRMS: ' + Number(Applications.HRMS))
+        if (Number(applicationId) === Number(Applications.ERP)) {
+            // console.log('constant working for ERP')
+
+            window.open('https://erpsystem.azurewebsites.net?subscriptionId=' + subscriptionId, '_blank');
         }
-        else if (appName === "HR Management System") {
-            baseUrl = '@Url.Action("Index", "ERPSystem", null, Context.Request.Scheme)';
+        else if (Number(applicationId) === Number(Applications.HRMS)) {
+            // console.log('constant working for HRMS')
+            console.log('value of constant: ' + Number(Applications.ERP))
+
+            window.open('https://hrsystemsgs.azurewebsites.net/WebLogin.aspx?subscriptionId=' + subscriptionId, '_blank');
         }
-        window.open('https://erpsystem.azurewebsites.net?subscriptionId=${subscriptionId}', '_blank');
     }
 </script>

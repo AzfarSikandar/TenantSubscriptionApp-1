@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Security.Claims;
 
 namespace TenantSubscriptionApp.Controllers
@@ -23,7 +22,7 @@ namespace TenantSubscriptionApp.Controllers
             _signInManager = signInManager;
         }
 
-        [Authorize(Policy = $"{Constants.Policies.RequireAdminOrManager}")]
+        [Authorize(Policy = $"{Constants.Policies.RequireAllUsers}")]
         public async Task<IActionResult> UserIndex()
         {
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -32,7 +31,7 @@ namespace TenantSubscriptionApp.Controllers
 
             var users = _unitOfWork.User.GetUsers().ToList();
 
-            if (User.IsInRole("Manager"))
+            if (!User.IsInRole("Administrator") )
             {
                 users = users.Where(us => us.Organisation.Id == signedInUser.Organisation.Id).ToList();
             }
@@ -53,10 +52,10 @@ namespace TenantSubscriptionApp.Controllers
                 new SelectListItem(
                     role.Name,
                     role.Id,
-                    userRoles.Any(ur => ur.Contains(role.Name)))).ToList();
+                    userRoles.Any(ur => ur.Contains(role.Name)), false)).ToList();
 
 
-            if (userRoles.Contains("Manager"))
+            if (userRoles.Contains("Manager") || userRoles.Contains("User"))
             {
                 roleItems.ForEach(ur => ur.Disabled = ur.Text == "Administrator" ?  true : false );
             }
@@ -112,6 +111,7 @@ namespace TenantSubscriptionApp.Controllers
             {
                 await _signInManager.UserManager.RemoveFromRolesAsync(user, rolesToDelete);
             }
+           
 
             user.FirstName = data.User.FirstName;
             user.LastName = data.User.LastName;

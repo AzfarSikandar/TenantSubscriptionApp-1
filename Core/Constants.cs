@@ -17,6 +17,8 @@
             public const string RequireAllUsers = "AllUsers";
             public const string RequireAdminOrManager = "RequireAdminOrManager";
         }
+
+        
     }
 
 }

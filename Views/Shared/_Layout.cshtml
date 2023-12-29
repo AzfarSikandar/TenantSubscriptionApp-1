@@ -13,17 +13,17 @@
     <title>@ViewData["Title"] - TenantSubscription</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/AuthSystem.styles.css" asp-append-version="true" />
+    @* <link rel="stylesheet" href="~/TenantSubsc.styles.css" asp-append-version="true" /> *@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
-        <div class="container-fluid p-0">
+        <div class="container-fluid p-1">
             @if (!User.Identity.IsAuthenticated)
             {
-                <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+                <nav class="navbar navbar-expand navbar-toggleable-sm navbar-light bg-white pb-0 px-4">
 
-                    <a class="navbar-brand" asp-area="" asp-controller="" asp-action="">SGS - TenantsRegistration</a>
+                    <a class="navbar-brand" asp-area="" asp-controller="" asp-action="">Tenant - Subscription</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                             aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -38,7 +38,7 @@
                 var firstNameCapitalized = char.ToUpper(firstName[0]) + firstName.Substring(1);
                 <nav class="navbar navbar-expand navbar-toggleable-sm navbar-light bg-white pb-0 px-4">
 
-                    <a class="navbar-brand" asp-area="" asp-controller="" asp-action=""> Tenant - @firstNameCapitalized </a>
+                    <a class="navbar-brand" asp-area="" asp-controller="" asp-action=""> Tenant - Subscription  </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                             aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -55,15 +55,18 @@
                             <li class="nav-item">
                                 <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" href="@Url.Action("Index", "Dashboard")">Home</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "SubscriptionIndex" ? "active" : "")" href="@Url.Action("SubscriptionIndex", "Subscription")">Subscriptions</a>
-                            </li>
-                            @if (User.IsInRole("Administrator") || User.IsInRole("Manager"))
+                            @if (!User.IsInRole("Administrator"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "UserIndex" ? "active" : "")" href="@Url.Action("UserIndex", "User")">Users</a>
+                                    <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "SubscriptionIndex" ? "active" : "")" href="@Url.Action("SubscriptionIndex", "Subscription")">Subscriptions</a>
                                 </li>
+
+
                             }
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "UserIndex" ? "active" : "")" href="@Url.Action("UserIndex", "User")">Users</a>
+                            </li>
+
                             @if (User.IsInRole("Administrator"))
                             {
                                 <li class="nav-item">
@@ -85,10 +88,10 @@
         </main>
     </div>
 
- @*    <footer class="border-top footer text-muted mb-0">
-        <div class="container">
-            &copy; 2023 - TenantSubscription - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
+    @*    <footer class="border-top footer text-muted mb-0">
+    <div class="container">
+    &copy; 2023 - TenantSubscription - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    </div>
     </footer> *@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
             integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"

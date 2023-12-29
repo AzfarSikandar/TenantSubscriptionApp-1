@@ -4,7 +4,6 @@
 </div>
 
 @model List<Application>
-
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Add Subscription";
@@ -22,11 +21,11 @@
 
                         <div class="form-group mb-3">
                             <label class="mb-3" for="selectedApp">Applications: </label>
-                            <select class="form-control mb-3" id="selectedApp" name="appName">
+                            <select class="form-control mb-3" id="selectedApp" name="applicationId">
                                 <option value="" disabled selected>Select Application</option>
                                 @foreach (var app in Model)
                                 {
-                                    var isSubscribed = ViewBag.SubscribedApps.Contains(app.Name);
+                                    var isSubscribed = ViewBag.SubscribedApps.Contains(app);
                                     var isDisable = isSubscribed ? "disabled" : "";
 
                                     @if (isSubscribed)
@@ -43,7 +42,7 @@
                         </div>
 
                         <div class="text-center">
-                            <button type="button" class="btn btn-primary mt-3" onclick="submitForm()">Subscribe</button>
+                            <button type="submit" class="btn btn-primary mt-3" onclick="submitForm()">Subscribe</button>
                         </div>
                     </form>
                 </div>
@@ -53,7 +52,7 @@
 </div>
 
 
-<script>
+@* <script>
     function submitForm() {
         // Show loader
         var loader = document.getElementById('subscriptionLoader');
@@ -72,5 +71,25 @@
             }
             loaderMessage.innerText = 'Creating Database...'; // Update loader message
         }, 2000);
+    }
+</script> *@
+
+<script>
+    function submitForm() {
+        // Show loader
+        var loader = document.getElementById('subscriptionLoader');
+        var loaderMessage = document.getElementById('loaderMessage');
+
+        loader.style.display = 'flex'; // Show loader container
+        loaderMessage.innerText = 'Please wait...'; // Initial message
+
+        var form = document.getElementById('subscriptionForm');
+        if (form) {
+            // Update loader message
+            loaderMessage.innerText = 'Creating Database...';
+
+            // Submit the form
+            form.submit();
+        }
     }
 </script>
