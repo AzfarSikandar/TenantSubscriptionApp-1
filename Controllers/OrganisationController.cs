@@ -41,14 +41,16 @@ namespace TenantSubscriptionApp.Controllers
                 var user = new ApplicationUser();
 
                 user.OrganisationId = input.Id;
-                user.FirstName = $"Manger-{(input.Name).Split(' ').FirstOrDefault()}";
-                user.LastName = $" ";
-                var email = $"{user.FirstName}@{(input.Name).Split(' ').FirstOrDefault()}.com";
+                user.FirstName = $"Manger{(input.Name).Split(' ').FirstOrDefault()}";
+                user.LastName = $"Default";
+                var email = $"Manager@{(input.Name).Split(' ').FirstOrDefault()}.com";
 
                 user.Email = email ;
                 user.UserName = email;
 
                 var result = await _userManager.CreateAsync(user, $"Admin@123");
+                await _userManager.AddToRoleAsync(user, "Manager");
+                await _userManager.AddToRoleAsync(user, "User");
             }
             catch (Exception ex)
             {

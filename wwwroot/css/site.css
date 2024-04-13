@@ -108,4 +108,6 @@ body {
         background-color: #ecf0f1; /* Change the background color of the active tab to a darker color */
         color: #ecf0f1; /* Change the text color of the active tab to a light color */
     }
-
+.left-indented {
+    padding-left: 20px; /* Adjust the left padding as needed */
+}

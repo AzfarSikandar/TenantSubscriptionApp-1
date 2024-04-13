@@ -55,7 +55,9 @@ namespace TenantSubscriptionApp.Controllers
                     userRoles.Any(ur => ur.Contains(role.Name)), false)).ToList();
 
 
-            if (userRoles.Contains("Manager") || userRoles.Contains("User"))
+            var organisations = _unitOfWork.Organisation.GetOrganisations().ToList();
+            bool isInRole = User.IsInRole("Administrator");
+            if (!isInRole)
             {
                 roleItems.ForEach(ur => ur.Disabled = ur.Text == "Administrator" ?  true : false );
             }
@@ -65,6 +67,7 @@ namespace TenantSubscriptionApp.Controllers
                 User = user,
                 Roles = roleItems
             };
+            vm.OrganisationList = new SelectList(organisations, "Id", "Name");
 
             return View(vm);
         }
@@ -116,6 +119,8 @@ namespace TenantSubscriptionApp.Controllers
             user.FirstName = data.User.FirstName;
             user.LastName = data.User.LastName;
             user.Email = data.User.Email;
+            user.OrganisationId = data.User.OrganisationId > 0 ? data.User.OrganisationId : user.OrganisationId;
+            //user.OrganisationId = data.User.OrganisationId;
 
             _unitOfWork.User.UpdateUser(user);
 

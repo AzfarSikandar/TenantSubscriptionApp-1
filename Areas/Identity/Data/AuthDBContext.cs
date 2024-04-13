@@ -3,7 +3,6 @@ using TenantSubscriptionApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace TenantSubscriptionApp.Data;
 
@@ -64,13 +63,6 @@ public class AuthDBContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(ts => ts.ApplicationId)
             .OnDelete(DeleteBehavior.Cascade); // Optional: Configure delete behavior if needed
 
-        //builder.Entity<ApplicationUser>()
-        //   .HasMany(t => t.Subscriptions)
-        //   .WithOne(ts => ts.User)
-        //   .HasForeignKey(ts => ts.UserId)
-        //   .IsRequired()
-        //   .OnDelete(DeleteBehavior.Cascade);
-
 
         builder.Entity<TenantSubscription>().Property(e => e.CreatedAt)
             .HasDefaultValueSql("GETUTCDATE()");
@@ -84,5 +76,13 @@ public class AuthDBContext : IdentityDbContext<ApplicationUser>
         builder.Entity<IdentityUserRole<string>>().ToTable("UserRoles");
         builder.Entity<ApplicationUser>().ToTable("Users");
         builder.Entity<IdentityUserToken<string>>().ToTable("UserTokens");
+    }
+}
+
+public class MasterDbContext : DbContext
+{
+    public MasterDbContext(DbContextOptions<MasterDbContext> options)
+        :base (options)
+    {
     }
 }

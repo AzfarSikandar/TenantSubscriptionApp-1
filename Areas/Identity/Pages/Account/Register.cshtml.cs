@@ -152,7 +152,7 @@ namespace TenantSubscriptionApp.Areas.Identity.Pages.Account
 
                 var user = CreateUser();
 
-                user.OrganisationId = User.IsInRole("Manager") == true ? signedInUser.Organisation.Id : SelectedOrganisationId;
+                user.OrganisationId = User.IsInRole("Administrator") == true ? SelectedOrganisationId : signedInUser.Organisation.Id;
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
 
@@ -168,12 +168,14 @@ namespace TenantSubscriptionApp.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     //Custom Code for setting the first user for an organization to be a manager by default continued
+
                     if (countOrg == 0)
                     {
                         await _userManager.AddToRoleAsync(user, "Manager");
                     }
 
                     await _userManager.AddToRoleAsync(user, "User");
+
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);

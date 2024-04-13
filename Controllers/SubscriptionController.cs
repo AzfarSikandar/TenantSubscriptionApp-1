@@ -29,10 +29,8 @@ namespace TenantSubscriptionApp.Controllers
 
             foreach (var subscription in subscriptions)
             {
-
                 bool isCreated = await _unitOfWork.Subscription.CheckDbCreated(subscription);
                 subscription.IsActive = isCreated;
-
             }
 
             return View(subscriptions);
@@ -64,7 +62,7 @@ namespace TenantSubscriptionApp.Controllers
 
             var user = _unitOfWork.User.GetUser(userId);
 
-            var isCreated = await _unitOfWork.Subscription.AddSubscription(applicationId, user);
+            await _unitOfWork.Subscription.AddSubscription(applicationId, user);
 
             return RedirectToAction("SubscriptionIndex");
         }

@@ -22,7 +22,7 @@
                 <tr>
                     <th scope="col" class="text-left">Id</th>
                     <th scope="col" class="text-left">Name</th>
-                    <th scope="col" class="text-left">Edit</th>
+                    @* <th scope="col" class="text-left">Edit</th> *@
                 </tr>
             </thead>
             <tbody>
@@ -31,9 +31,9 @@
                     <tr>
                         <td class="text-left">@Model[i].Id</td>
                         <td class="text-left">@Model[i].Name</td>
-                        <td class="text-left">
+                        @* <td class="text-left">
                             <a asp-controller="Organisation" asp-action="Edit" asp-route-id="@Model[i].Id">Edit</a>
-                        </td>
+                        </td> *@
                     </tr>
                 }
             </tbody>

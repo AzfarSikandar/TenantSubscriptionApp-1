@@ -1,8 +1,6 @@
-﻿using TenantSubscriptionApp.Areas.Identity.Data;
-using TenantSubscriptionApp.Core.Repositories;
+﻿using TenantSubscriptionApp.Core.Repositories;
 using TenantSubscriptionApp.Data;
 using TenantSubscriptionApp.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,8 +9,6 @@ namespace TenantSubscriptionApp.Repositories
     public class OrganisationRepository : IOrganisationRepository
     {
         private readonly AuthDBContext _dbContext;
-
-
 
         public OrganisationRepository(AuthDBContext authDBContext)
         {
@@ -59,22 +55,5 @@ namespace TenantSubscriptionApp.Repositories
 
             return isCreated;
         }
-
-      //public async Task<bool> Update(int id)
-      //  {
-      //      var result = false;
-
-      //      try
-      //      {
-
-      //      }
-      //      catch (Exception)
-      //      {
-
-      //          throw;
-      //      }
-      //      return result;
-      //  }
-
     }
 }

@@ -4,22 +4,26 @@ using TenantSubscriptionApp.Data;
 using TenantSubscriptionApp.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
+using TenantSubscriptionApp.Core;
 
 namespace TenantSubscriptionApp.Repositories
 {
     public class SubscriptionRepository : ISubscriptionRepository
     {
         private readonly AuthDBContext _dbContext;
+        private readonly MasterDbContext _masterDbContext;
 
         private readonly IConfiguration _configuration;
 
-        public SubscriptionRepository(AuthDBContext dbContext, IConfiguration configuration)
+        public SubscriptionRepository(AuthDBContext dbContext, IConfiguration configuration, MasterDbContext masterdDbContext)
         {
             _dbContext = dbContext;
             _configuration = configuration;
+            _masterDbContext = masterdDbContext;
         }
 
-        public  ICollection<TenantSubscription> GetSubscriptions(int organisationId)
+        public ICollection<TenantSubscription> GetSubscriptions(int organisationId)
         {
             List<TenantSubscription> subscriptions = new List<TenantSubscription>();
 
@@ -30,111 +34,95 @@ namespace TenantSubscriptionApp.Repositories
             return subscriptions;
         }
 
-
         public async Task<bool> AddSubscription(int applicationId, ApplicationUser user)
         {
-            bool iscreated = false;
+            bool isSubscribed = false;
             try
             {
-                //var applicationId = _context.Applications.Where(ap => ap.Name == appName).Select(ap => ap.Id).FirstOrDefault();
-                var organization = user.Organisation;
-
-                var templateConnectionString = _configuration.GetConnectionString("TemplateConnectionString");
-
-                var connectionStringBuilder = new SqlConnectionStringBuilder(templateConnectionString);
-
-                var organisationRemoveWhiteSpaces = organization.Name.Replace(" ", "");
-
-                using (SqlConnection conn = new(templateConnectionString))
+                var existingSubscription = await _dbContext.TenantSubscriptions
+                                                .Where(t => t.ApplicationId == applicationId && t.OrganisationId == user.OrganisationId)
+                                                .FirstOrDefaultAsync();
+                if (existingSubscription == null)
                 {
-                    string dbName = "";
-                    switch (applicationId)
-                    {
-                        case 1:
-                            dbName = "ERPSGS";
-                            break;
-                        case 2:
-                            dbName = "PayrollDB_Azure";
-                            break;
-                    }
-                    connectionStringBuilder.InitialCatalog = organisationRemoveWhiteSpaces + dbName;
+                    var templateConnectionString = _configuration.GetConnectionString("MasterConnectionString");
 
+                    var organisationWithoutSpaces = user.Organisation.Name.Replace(" ", "");
+                    var applicationDbName = $"{Enum.GetName(typeof(DBNames), applicationId)}";
+
+                    var dbName = organisationWithoutSpaces + applicationDbName;
+
+
+                    // Create a copy of the template connection string
+                    var connectionStringBuilder = new SqlConnectionStringBuilder(templateConnectionString)
+                    {
+                        InitialCatalog = dbName
+                    };
+
+                    // Create subscription entity
                     var subscription = new TenantSubscription
                     {
                         UserId = user.Id,
-                        OrganisationId = organization.Id,
+                        OrganisationId = user.Organisation.Id,
                         ApplicationId = applicationId,
                         ConnectionString = connectionStringBuilder.ToString(),
-
                     };
-                    //var dbCount = _context.TenantSubscriptions
-                    //                .Where(sub => sub.UserId == userId && sub.ApplicationName == appName)
-                    //                .Count();
-                    string backupQuery = $"CREATE DATABASE {organisationRemoveWhiteSpaces + dbName} AS COPY OF {dbName}";
 
-                    //string dbExistQuery = $"SELECT Count(*) AS Count FROM sys.Databases WHERE name = @name";
+                    // Create the new database on Azure SQL
+                    var createDatabaseQuery = $"CREATE DATABASE {dbName} AS COPY OF {applicationDbName}";
 
-                    using (SqlCommand command = new SqlCommand(backupQuery, conn))
-                    {
-                        await conn.OpenAsync();
+                    var command = _masterDbContext.Database.GetDbConnection().CreateCommand();
+                    command.CommandTimeout = 500;
 
-                        command.ExecuteNonQueryAsync();
-                        //command.CommandTimeout = 300;
-                        //await conn.CloseAsync();
-                    }
+                    _masterDbContext.Database.ExecuteSqlRawAsync(
+                        createDatabaseQuery
+                    );
 
-                    await _dbContext.TenantSubscriptions.AddAsync(subscription);
+                    // Add the subscription to the master database
+                    _dbContext.TenantSubscriptions.Add(subscription);
                     await _dbContext.SaveChangesAsync();
 
+                    isSubscribed = true;
                 }
+                return isSubscribed;
             }
             catch (Exception)
             {
-
                 throw;
             }
-            return iscreated;
         }
-       
+
         public async Task<bool> CheckDbCreated(TenantSubscription input)
         {
             bool isCreated = false;
-            int count = 0;
-            var templateConnectionString = _configuration.GetConnectionString("TemplateConnectionString");
+            int dbCount; 
+            var templateConnectionString = _configuration.GetConnectionString("MasterConnectionString");
             try
             {
-                using (SqlConnection conn = new(templateConnectionString))
+                string? organisationName = input.Organisation.Name.Replace(" ", "");
+
+                string dbName = $"{organisationName}{Enum.GetName(typeof(DBNames), input.ApplicationId)}";
+
+                string checkQuery = $"SELECT Count(*) AS Count FROM sys.databases WHERE name = @dbName";
+
+                using SqlConnection conn = new(templateConnectionString);
+
+                //using var cmd = conn.CreateCommand(checkQuery);
+
+                using (var cmd  = conn.CreateCommand())
                 {
-                    string? organisationName = input.Organisation.Name.Replace(" ", "");
-
-                    string appName = "";
-
-                    switch (input.Application.Id)
-                    {
-                        case 1:
-                            appName = "ERPSGS";
-                            break;
-                        case 2:
-                            appName = "PayrollDB_Azure";
-                            break;
-                    }
-
-                    string dbName = organisationName + appName;
-                    string checkQuery = $"SELECT Count(*) AS Count FROM sys.databases WHERE name = @dbName";
-
-                    using SqlCommand cmd = new(checkQuery, conn);
+                    cmd.CommandText = checkQuery;
 
                     cmd.Parameters.AddWithValue("@dbName", dbName);
 
                     await conn.OpenAsync();
 
-                    var rowCount = await cmd.ExecuteScalarAsync();
+                    var count = await cmd.ExecuteScalarAsync();
+                    dbCount = Convert.ToInt16(count);
 
-                    count = Convert.ToInt16(rowCount);
                     await conn.CloseAsync();
                 }
 
-                if (count > 0 && (DateTime.UtcNow - input.CreatedAt) > TimeSpan.FromMinutes(2))
+                if (dbCount > 0 && (DateTime.UtcNow - input.CreatedAt) > TimeSpan.FromMinutes(2))
                 {
                     isCreated = true;
                     var subscriptionToUpdate = _dbContext.TenantSubscriptions.Find(input.Id);
@@ -148,12 +136,14 @@ namespace TenantSubscriptionApp.Repositories
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
 
-
             return isCreated;
         }
+    }
+    public class DatabaseExistsResult
+    {
+        public int Count { get; set; }
     }
 }

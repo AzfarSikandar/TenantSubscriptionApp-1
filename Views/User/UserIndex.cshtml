@@ -21,7 +21,7 @@
     <hr />
     @if (@Model != null && @Model.Any())
     {
-        <table class="table">
+        <table class="table text-start">
             <thead>
                 <tr>
                     <th scope="col">S.No</th>
@@ -51,7 +51,7 @@
                             <td>
 
 
-                                <a asp-controller="User" asp-action="Edit" asp-route-id="@Model[i].Id" disabled>Edit</a>
+                                <a asp-controller="User" asp-action="Edit" asp-route-id="@Model[i].Id">Edit</a>
 
 
                             </td>

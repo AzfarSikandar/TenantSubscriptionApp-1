@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using TenantSubscriptionApp.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace TenantSubscriptionApp.Areas.Identity.Data;
 
-// Add profile data for application users by adding properties to the ApplicationUser class
 public class ApplicationUser : IdentityUser
 {
     [PersonalData]
@@ -27,11 +21,3 @@ public class ApplicationUser : IdentityUser
 
     public List<TenantSubscription> Subscriptions { get; set; }
 }
-
-//public class UserRole : IdentityUserRole<string>
-//{
-//    public string UserId  { get; set; }
-
-//    public string RoleId { get; set; }
-//}
-

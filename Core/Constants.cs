@@ -18,7 +18,11 @@
             public const string RequireAdminOrManager = "RequireAdminOrManager";
         }
 
-        
+        public static class Database
+        {
+            public const string ERPDB = "ERPSGS";
+            public const string HRDB = "PayrollDB_Azure";
+        }
     }
 
 }

@@ -1,28 +1,27 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TenantSubscriptionApp.Data;
-using TenantSubscriptionApp.TenantService;
-using TenantSubscriptionApp.Country;
 using TenantSubscriptionApp.Core.Repositories;
 using TenantSubscriptionApp.Repositories;
 using TenantSubscriptionApp.Areas.Identity.Data;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("AuthDBContextConnection") ?? throw new InvalidOperationException("Connection string 'AuthDBContextConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("TenantSubscriptionConnectionString") ?? throw new InvalidOperationException("Connection string 'TenantSubscriptionConnectionString' not found.");
+var masterConnectionString = builder.Configuration.GetConnectionString("MasterConnectionString") ?? throw new InvalidOperationException("Connection string 'MasterConnectionString' not found.");
 
 builder.Services.AddDbContext<AuthDBContext>(options =>
     options.UseSqlServer(connectionString));
+
+builder.Services.AddDbContext<MasterDbContext>(options =>
+{
+    options.UseSqlServer(masterConnectionString);
+
+});
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<AuthDBContext>().AddDefaultTokenProviders();
 
-//builder.Services.
-
-
-builder.Services.AddTransient<ITenantBLL, TenantBLL>();
-
-builder.Services.AddTransient<ICountryService, CountryService>();
 
 //builder.Services.AddHttpContextAccessor();
 builder.Services.Configure<IdentityOptions>(options =>
@@ -47,8 +46,13 @@ builder.Services.AddRazorPages();
 //builder.Services.AddAuthorization(options => options.AddPolicy("UserOnly", policy => policy.RequireClaim("UserId")));
 
 
-
-AddScoped();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IOrganisationRepository, OrganisationRepository>();
+builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
+builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+//AddScoped();
 
 var app = builder.Build();
 
@@ -98,12 +102,7 @@ void AddAuthorizationPolicies(IServiceCollection services)
     });
 }
 
-void AddScoped()
-{
-    builder.Services.AddScoped<IUserRepository, UserRepository>();
-    builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-    builder.Services.AddScoped<IOrganisationRepository, OrganisationRepository>();
-    builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
-    builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
-    builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-}
+//void AddScoped()
+//{
+    
+//}
